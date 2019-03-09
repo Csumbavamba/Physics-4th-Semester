@@ -6,6 +6,7 @@
 #include "Utility.h"
 #include "Input.h" // not used
 
+
 #pragma comment(lib, "Ws2_32.lib")
 
 GameManager_3D * GameManager_3D::instance = NULL;
@@ -15,6 +16,12 @@ GameManager_3D::GameManager_3D()
 	deltaTime = 0.0f;
 	mainCamera = new Camera(PERSPECTIVE);
 
+
+	// PHYSICS Elements
+	pointOnPlane = glm::vec3(1.0f, 1.0f, 1.0f);
+	planeNormalVector = glm::vec3(1.0f, 0.0f, 0.0f);
+	pointInAir = glm::vec3(1.0f, 5.0f, 5.0f);
+	triangle = Triangle(glm::vec3(1.0f, 5.0f, 5.0f), glm::vec3(3.0f, 5.0f, 5.0f), glm::vec3(4.0f, 4.0f, 1.0f)); // First point should be on the plane
 
 }
 
@@ -90,14 +97,43 @@ void GameManager_3D::Initialise()
 {
 	// Create Programs
 	lightingProgram = ShaderLoader::GetInstance()->CreateProgram("Phong-VertexShader.vs", "Phong-FragmentShader.fs");
-	outputString += "lightingProgram Initialised. \n";
+
+
+	// Do calculations here
+
+	// Proving Lagrange
+	Physics::ProveLagrangeValid(
+		GetInstance()->pointOnPlane,
+		GetInstance()->pointInAir,
+		glm::vec3(2.0f, 2.0f, 2.0f)
+	);
+	
+	// Check if the point is on Plane
+	Physics::GetInstance()->IsPointOnPlane(
+		GetInstance()->pointInAir, 
+		GetInstance()->planeNormalVector, 
+		GetInstance()->pointOnPlane);
+
+	// Line Segment Collision
+	Physics::IsLineCollidingWithPlane(
+		glm::vec3(5.0f, 10.0f, 5.0f),
+		glm::vec3(1.0f, 5.0f, 5.0f),
+		GetInstance()->planeNormalVector,
+		GetInstance()->pointOnPlane
+	);
+
+	// Check for Triangle collision
+	Physics::IsTriangleCollidingWithPlane(
+		GetInstance()->triangle,
+		GetInstance()->planeNormalVector,
+		GetInstance()->pointOnPlane);
+
 
 
 	// Deltatime calculation
 	previousTimeStamp = (float)glutGet(GLUT_ELAPSED_TIME);
 
 	mainCamera->Initialise();
-	outputString += ("mainCamera Initialised. \n");
 
 }
 
@@ -127,6 +163,10 @@ void GameManager_3D::Update()
 
 	// Camera Update
 	GetInstance()->mainCamera->Update(GetInstance()->deltaTime);
+
+
+	
+
 
 	// Last function call
 	glutPostRedisplay();

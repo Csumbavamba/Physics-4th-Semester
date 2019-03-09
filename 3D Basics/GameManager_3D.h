@@ -5,6 +5,9 @@
 #include "Dependencies\glew\glew.h"
 #include "Dependencies\freeglut\freeglut.h"
 
+// FOR PHYSICS
+#include "Physics.h"
+
 #include <vector>
 #include <thread>
 
@@ -19,11 +22,13 @@ public:
 
 	static void PlayGame(int argc, char **argv);
 	void Initialise();
+	
 	static void Render();
 	static void Update();
 	static void ShutDownGame();
 
 	float deltaTime;
+
 
 private:
 
@@ -46,6 +51,14 @@ private:
 
 	// Gameobjects
 	Camera * mainCamera = NULL;
+
+
+	// Physics test
+	glm::vec3 pointOnPlane;
+	glm::vec3 planeNormalVector;
+	glm::vec3 pointInAir;
+
+	Triangle triangle;
 
 };
 
