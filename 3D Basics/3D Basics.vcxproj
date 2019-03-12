@@ -144,6 +144,7 @@
     <ClCompile Include="AudioQueue.cpp" />
     <ClCompile Include="AudioSound.cpp" />
     <ClCompile Include="AudioSystem.cpp" />
+    <ClCompile Include="Capsule.cpp" />
     <ClCompile Include="FileWriting.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Physics.cpp" />
@@ -176,6 +177,8 @@
     <ClInclude Include="AudioQueue.h" />
     <ClInclude Include="AudioSound.h" />
     <ClInclude Include="AudioSystem.h" />
+    <ClInclude Include="Capsule.h" />
+    <ClInclude Include="CapsuleSettings.h" />
     <ClInclude Include="FileWriting.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Triangle.h" />

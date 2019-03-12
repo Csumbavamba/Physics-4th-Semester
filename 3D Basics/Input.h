@@ -49,7 +49,7 @@ public:
 
 	void ScreenSpaceToWorldSpace(int x, int y);
 
-	static void ShutDownInput();
+	static void ShutDown();
 
 private:
 	Input() {};

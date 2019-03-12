@@ -73,8 +73,29 @@ void Input::MouseClick(int button, int state, int x, int y)
 	if (button >= 3)
 		return;
 
-	GetInstance()->mouseState[button] = (state == GLUT_DOWN) ? DOWN : UP;
+	// If clicked, set it to DOWN_FIRST
+	if (state == GLUT_DOWN && GetInstance()->mouseState[button] == UP)
+	{
+		GetInstance()->mouseState[button] = DOWN_FIRST;
+	}
+	// If it's been clicked for a while, DOWN
+	else if (state == GLUT_DOWN && GetInstance()->mouseState[button] == DOWN_FIRST)
+	{
+		GetInstance()->mouseState[button] = DOWN;
+	}
+	// If the mouse is released, UP_FIRST
+	else if (state != GLUT_DOWN && GetInstance()->mouseState[button] == DOWN)
+	{
+		GetInstance()->mouseState[button] = UP_FIRST;
+	}
+	// OTHERWISE its UP
+	else
+	{
+		GetInstance()->mouseState[button] = UP;
+	}
+
 }
+
 
 void Input::MouseActiveMove(int x, int y)
 {
@@ -132,7 +153,7 @@ void Input::ScreenSpaceToWorldSpace(int x, int y)
 	
 }
 
-void Input::ShutDownInput()
+void Input::ShutDown()
 {
 	delete instance;
 	instance = NULL;

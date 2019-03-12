@@ -95,6 +95,9 @@
     <ClCompile Include="Physics.cpp">
       <Filter>Source\Physics-Testing</Filter>
     </ClCompile>
+    <ClCompile Include="Capsule.cpp">
+      <Filter>Source\Physics-Testing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -192,6 +195,12 @@
       <Filter>Header Files\Physics-Testing</Filter>
     </ClInclude>
     <ClInclude Include="Triangle.h">
+      <Filter>Header Files\Physics-Testing</Filter>
+    </ClInclude>
+    <ClInclude Include="CapsuleSettings.h">
+      <Filter>Header Files\Physics-Testing</Filter>
+    </ClInclude>
+    <ClInclude Include="Capsule.h">
       <Filter>Header Files\Physics-Testing</Filter>
     </ClInclude>
   </ItemGroup>

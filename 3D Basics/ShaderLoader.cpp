@@ -164,7 +164,7 @@ GLuint ShaderLoader::CreateProgram(const char* vertexShaderFilename,
 	return program;
 }
 
-void ShaderLoader::ShutDownShaderLoader()
+void ShaderLoader::ShutDown()
 {
 	delete instance;
 	instance = NULL;

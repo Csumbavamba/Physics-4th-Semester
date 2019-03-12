@@ -14,6 +14,7 @@
 class ShaderLoader;
 class Camera;
 class FileWriting;
+class Capsule;
 
 class GameManager_3D
 {
@@ -59,6 +60,8 @@ private:
 	glm::vec3 pointInAir;
 
 	Triangle triangle;
+	float capsuleRadius;
+	CapsuleSettings capsule1, capsule2;
 
 };
 

@@ -6,6 +6,9 @@
 #include "Utility.h"
 #include "Input.h" // not used
 
+// Physics Test
+#include "Capsule.h"
+
 
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -20,9 +23,20 @@ GameManager_3D::GameManager_3D()
 	// PHYSICS Elements
 	pointOnPlane = glm::vec3(1.0f, 1.0f, 1.0f);
 	planeNormalVector = glm::vec3(1.0f, 0.0f, 0.0f);
-	pointInAir = glm::vec3(1.0f, 5.0f, 5.0f);
-	triangle = Triangle(glm::vec3(1.0f, 5.0f, 5.0f), glm::vec3(3.0f, 5.0f, 5.0f), glm::vec3(4.0f, 4.0f, 1.0f)); // First point should be on the plane
+	pointInAir = glm::vec3(0.0f, 5.0f, 5.0f);
 
+	triangle = Triangle(glm::vec3(0.0f, 5.0f, 5.0f), glm::vec3(3.0f, 5.0f, 5.0f), glm::vec3(4.0f, 4.0f, 1.0f));
+	capsuleRadius = 1.0f;
+
+	// Setup Capsule1
+	capsule1 = CapsuleSettings(
+		LineSegment(glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(4.0f, 0.0f, 4.0f)),
+		capsuleRadius);
+
+	// Setup Capsule2
+	capsule2 = CapsuleSettings(
+		LineSegment(glm::vec3(2.0f, 0.0f, 1.0f), glm::vec3(6.0f, 0.0f, 6.0f)),
+		capsuleRadius);
 }
 
 
@@ -33,8 +47,9 @@ GameManager_3D::~GameManager_3D()
 	mainCamera = NULL;
 
 	// Static Deletes
-	ShaderLoader::ShutDownShaderLoader();
-	Input::ShutDownInput();
+	Physics::ShutDown();
+	ShaderLoader::ShutDown();
+	Input::ShutDown();
 	Utility::ShutDown();
 }
 
@@ -96,12 +111,10 @@ void GameManager_3D::PlayGame(int argc, char ** argv)
 void GameManager_3D::Initialise()
 {
 	// Create Programs
-	lightingProgram = ShaderLoader::GetInstance()->CreateProgram("Phong-VertexShader.vs", "Phong-FragmentShader.fs");
-
-
-	// Do calculations here
+	lightingProgram = ShaderLoader::GetInstance()->CreateProgram("VertexShader.vs", "FragmentShader.fs");
 
 	// Proving Lagrange
+	std::cout << std::endl << "Lagrange Test..." << std::endl;
 	Physics::ProveLagrangeValid(
 		GetInstance()->pointOnPlane,
 		GetInstance()->pointInAir,
@@ -109,38 +122,53 @@ void GameManager_3D::Initialise()
 	);
 	
 	// Check if the point is on Plane
-	Physics::GetInstance()->IsPointOnPlane(
+	std::cout << std::endl << "Point on Plane Test..." << std::endl;
+	Physics::IsPointOnPlane(
 		GetInstance()->pointInAir, 
 		GetInstance()->planeNormalVector, 
 		GetInstance()->pointOnPlane);
 
 	// Line Segment Collision
+	std::cout << std::endl << "Line Segment Collision with Plane Test..." << std::endl;
 	Physics::IsLineCollidingWithPlane(
 		glm::vec3(5.0f, 10.0f, 5.0f),
-		glm::vec3(1.0f, 5.0f, 5.0f),
+		glm::vec3(0.0f, 5.0f, 5.0f),
 		GetInstance()->planeNormalVector,
 		GetInstance()->pointOnPlane
 	);
 
 	// Check for Triangle collision
+	std::cout << std::endl << "Triangle Collision with Plane Test..." << std::endl;
 	Physics::IsTriangleCollidingWithPlane(
 		GetInstance()->triangle,
 		GetInstance()->planeNormalVector,
 		GetInstance()->pointOnPlane);
 
-
+	// Check for capsule collision
+	std::cout << std::endl << "Capsule Collision with Plane Test..." << std::endl;
+	if (Physics::IsCapsuleColliding(capsule1, capsule2))
+	{
+		std::cout << "Capsuled are colliding..." << std::endl;
+	}
+	else
+	{
+		std::cout << "Capsuled are NOT colliding..." << std::endl;
+	}
 
 	// Deltatime calculation
 	previousTimeStamp = (float)glutGet(GLUT_ELAPSED_TIME);
 
 	mainCamera->Initialise();
 
+	// Do Initialization after this....
+
+
 }
 
 void GameManager_3D::Render()
 {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	glClearColor(0.0, 0.0, 0.0, 1.0); // clear red
+	glClearColor(1.0, 0.0, 0.0, 1.0); // clear red
 
 	// Do rendering here
 
@@ -165,7 +193,9 @@ void GameManager_3D::Update()
 	GetInstance()->mainCamera->Update(GetInstance()->deltaTime);
 
 
-	
+	// Update after this call.....
+	// GetInstance()->capsule1->Update(GetInstance()->deltaTime);
+	// GetInstance()->mainCamera->FollowObject(GetInstance()->capsule1->transform.position);
 
 
 	// Last function call
